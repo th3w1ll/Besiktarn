@@ -66,6 +66,7 @@ struct LoginView: View {
                     })
                     .buttonStyle(.borderedProminent)
                     .tint(.teal)
+                    .foregroundColor(.black)
                     
                     .padding()
                     
@@ -76,6 +77,7 @@ struct LoginView: View {
                     })
                     .buttonStyle(.borderedProminent)
                     .tint(.teal)
+                    .foregroundColor(.black)
                     
                 }
             }

@@ -28,76 +28,70 @@ struct PictureView: View {
     @StateObject var settingsClass = SettingsViewModel()
     
     var body: some View {
-        VStack {
+        
+        ZStack {
             
-           
-            
-            if selectedImage != nil {
+            VStack {
                 
-                Image(uiImage: selectedImage!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
                 
-            } else {
-                Image(systemName: "photo.on.rectangle.angled")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100)
-            }
-            
-           
-            Spacer()
-            Color.white
-            
-            HStack{
+                if selectedImage != nil {
+                    
+                    Image(uiImage: selectedImage!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .padding(.top)
+                    
+                } else {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100, height: 100)
+                        .padding(.top)
+                }
+                
+               
                 Spacer()
-                Button(action: {
-                    self.sourceType = .camera
-                    self.isImagePickerDisplay.toggle()
-                }, label: {
-                    Text("Kamera")
-                    Image(systemName: "camera.fill")
-                        .buttonStyle(BorderlessButtonStyle())
-                })
-                .buttonStyle(.bordered)
-                .tint(.white)
-                .foregroundColor(.black)
-                .padding(12)
-                .padding(.leading)
+                Color.white
                 
-//                Button(action: {
-////                    self.sourceType = .camera
-////                    self.isImagePickerDisplay.toggle()
-//                }) {Text("Kamera")
-//                    Image(systemName: "camera.fill")}
-//                .onTapGesture {
-//                    self.sourceType = .camera
-//                    self.isImagePickerDisplay.toggle()
-//                }
-//                .buttonStyle(.borderedProminent)
-//                .tint(.teal)
-//                .padding(.leading)
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        self.sourceType = .camera
+                        self.isImagePickerDisplay.toggle()
+                    }, label: {
+                        Text("Kamera")
+                        Image(systemName: "camera.fill")
+                            .buttonStyle(BorderlessButtonStyle())
+                    })
+                    .buttonStyle(.borderedProminent)
+                    .tint(.teal)
+                    .foregroundColor(.black)
+                    .padding(12)
+                    .padding(.leading)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        self.sourceType = .photoLibrary
+                        self.isImagePickerDisplay.toggle()
+                    }, label: {
+                        Text("Bibliotek")
+                        Image(systemName: "photo.fill")
+                            .buttonStyle(BorderlessButtonStyle())
+                    })
+                    .buttonStyle(.borderedProminent)
+                    .tint(.teal)
+                    .foregroundColor(.black)
+                    .padding(12)
+                    .padding(.trailing)
+                    Spacer()
+                }
                 
-                
-                Spacer()
-                
-                Button(action: {
-                    self.sourceType = .photoLibrary
-                    self.isImagePickerDisplay.toggle()
-                }, label: {
-                    Text("Bibliotek")
-                    Image(systemName: "photo.fill")
-                        .buttonStyle(BorderlessButtonStyle())
-                })
-                .buttonStyle(.bordered)
-                .tint(.white)
-                .foregroundColor(.black)
-                .padding(12)
-                .padding(.trailing)
-                Spacer()
             }
             
         }
+        
+
         
         .toolbar {
             Menu{
@@ -124,10 +118,10 @@ struct PictureView: View {
                         Color.teal,
                         for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
-                    .background(Color.teal.ignoresSafeArea(edges: .bottom))
+//                    .background(Color.teal.ignoresSafeArea(edges: .bottom))
         
         .sheet(isPresented: self.$isImagePickerDisplay) {
-            ImagePickerView(selectedImage: self.$selectedImage, sourceType: self.sourceType)
+            ImagePickerView(selectedImage: self.$selectedImage, sourceType: self.$sourceType)
         }
         .onChange(of: selectedImage) { newValue in
             print("Bild Vald!")
@@ -244,7 +238,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
     
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) var isPresented
-    var sourceType: UIImagePickerController.SourceType
+    @Binding var sourceType: UIImagePickerController.SourceType
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()

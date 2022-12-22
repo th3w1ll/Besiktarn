@@ -23,73 +23,80 @@ struct MainView: View {
     var body: some View {
         NavigationView {
             
-            VStack{
-                List {
-                    ForEach (mainViewModel.clients, id: \.besId) { client in
-                        NavigationLink(destination: ClientView(clientClass: client)) {
-                            Text(client.besName)
+            ZStack{
+                Color.white
+                
+                VStack{
+                    List {
+                        ForEach (mainViewModel.clients, id: \.besId) { client in
+                            NavigationLink(destination: ClientView(clientClass: client)) {
+                                Text(client.besName)
+                            }
+                        }
+                        .onDelete(perform: mainViewModel.deleteItem)
+                    }
+                    .listStyle(.inset)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        TextField("Client Name", text: $clientName)
+                            .keyboardType(.default)
+                            .padding(.leading)
+                            .textFieldStyle(.roundedBorder)
+                        
+                        
+                        Button(action: {
+                            mainViewModel.saveData(besName: clientName)
+                            clientName = ""
+                        }, label: {
+                            Text("Lägg till")
+                        })
+                        .buttonStyle(.borderedProminent)
+                        .tint(.teal)
+                        .foregroundColor(.black)
+                        .padding()
+                        
+                    }
+                    
+                    .toolbar {
+                        Menu{
+                            Button(role:.none, action: {
+                                logBool = true
+                            }, label: {
+                                Label("Logga Ut", systemImage: "rectangle.portrait.and.arrow.right")
+                            })
+                            
+                            Button(role:.destructive, action: {
+                                delBool = true
+                            }, label: {
+                                Label("Radera Konto", systemImage: "trash")
+                            })
+                            
+                        }label: {
+                            Label("Option",systemImage: "ellipsis.circle")
+                                .tint(.black)
                         }
                     }
-                    .onDelete(perform: mainViewModel.deleteItem)
-                }
-                .listStyle(.inset)
-                
-                Spacer()
-                
-                HStack {
-                    TextField("Client Name", text: $clientName)
-                        .keyboardType(.default)
-                        .padding(.leading)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    
-                    Button(action: {
-                        mainViewModel.saveData(besName: clientName)
-                        clientName = ""
-                    }, label: {
-                        Text("Lägg till")
-                    })
-                    .buttonStyle(.bordered)
-                    .tint(.white)
-                    .foregroundColor(.black)
-                    .padding()
-                    
-                }
-                
-                .toolbar {
-                    Menu{
-                        Button(role:.none, action: {
-                            logBool = true
-                        }, label: {
-                            Label("Logga Ut", systemImage: "rectangle.portrait.and.arrow.right")
-                        })
-                        
-                        Button(role:.destructive, action: {
-                            delBool = true
-                        }, label: {
-                            Label("Radera Konto", systemImage: "trash")
-                        })
-                        
-                    }label: {
-                        Label("Option",systemImage: "ellipsis.circle")
-                            .tint(.black)
+                    if (mainViewModel.isLoading)
+                    {
+                        LoadingView()
                     }
                 }
-                if (mainViewModel.isLoading)
-                {
-                    LoadingView()
-                }
+                
             }
+            
+            
             .navigationTitle("Klienter")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(
-                            Color.teal,
-                            for: .navigationBar)
-                        .toolbarBackground(.visible, for: .navigationBar)
-                        .background(Color.teal.ignoresSafeArea(edges: .bottom))
+                Color.teal,
+                for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+//            .background(Color.teal.ignoresSafeArea(edges: .bottom))
             
             
-
+            
         }
         .frame(maxWidth: .infinity)
         .padding(.top)

@@ -103,8 +103,6 @@ class ClientViewModel : ObservableObject, Identifiable {
                             print("File deleted successfully")
                         }
                     }
-                    
-                    
                 }
             })
             

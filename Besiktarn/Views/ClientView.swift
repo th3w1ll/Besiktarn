@@ -21,64 +21,73 @@ struct ClientView: View {
     
     var body: some View {
         
-        VStack{
-            List {
-                ForEach (clientClass.roomList, id: \.roomId) { room in
-                    NavigationLink(destination: RoomView(roomClass: room)) {
-                        Text(room.roomName)
+        ZStack{
+            
+            Color.white
+            
+            VStack{
+                List {
+                    ForEach (clientClass.roomList, id: \.roomId) { room in
+                        NavigationLink(destination: RoomView(roomClass: room)) {
+                            Text(room.roomName)
+                        }
+                    }
+                    .onDelete(perform: clientClass.deleteItem)
+                }
+                .listStyle(.inset)
+                
+                Spacer()
+                
+                HStack {
+                    TextField("Room Name", text: $rumName)
+                        .keyboardType(.default)
+                        .padding(.leading)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    
+                    Button(action: {
+                        clientClass.saveData(roomName: rumName)
+                        rumName = ""
+                    }, label: {
+                        Text("Lägg till")
+                    })
+                    .buttonStyle(.borderedProminent)
+                    .tint(.teal)
+                    .foregroundColor(.black)
+                    .padding()
+                }
+                
+                .toolbar {
+                    Menu{
+                        Button(role:.none, action: {
+                            logBool = true
+                        }, label: {
+                            Label("Logga Ut", systemImage: "rectangle.portrait.and.arrow.right")
+                        })
+                        
+                        Button(role:.destructive, action: {
+                            delBool = true
+                        }, label: {
+                            Label("Radera Konto", systemImage: "trash")
+                        })
+                        
+                    }label: {
+                        Label("Option",systemImage: "ellipsis.circle")
+                            .tint(.black)
                     }
                 }
-                .onDelete(perform: clientClass.deleteItem)
-            }
-            .listStyle(.inset)
-            
-            Spacer()
-            
-            HStack {
-                TextField("Room Name", text: $rumName)
-                    .keyboardType(.default)
-                    .padding(.leading)
-                    .textFieldStyle(.roundedBorder)
-                
-                
-                Button(action: {
-                    clientClass.saveData(roomName: rumName)
-                    rumName = ""
-                }, label: {
-                    Text("Lägg till")
-                })
-                .buttonStyle(.bordered)
-                .tint(.white)
-                .foregroundColor(.black)
-                .padding()
+                .navigationTitle(clientName)
+                .toolbarBackground(
+                                Color.teal,
+                                for: .navigationBar)
+                            .toolbarBackground(.visible, for: .navigationBar)
+//                            .background(Color.teal.ignoresSafeArea(edges: .bottom))
             }
             
-            .toolbar {
-                Menu{
-                    Button(role:.none, action: {
-                        logBool = true
-                    }, label: {
-                        Label("Logga Ut", systemImage: "rectangle.portrait.and.arrow.right")
-                    })
-                    
-                    Button(role:.destructive, action: {
-                        delBool = true
-                    }, label: {
-                        Label("Radera Konto", systemImage: "trash")
-                    })
-                    
-                }label: {
-                    Label("Option",systemImage: "ellipsis.circle")
-                        .tint(.black)
-                }
-            }
-            .navigationTitle(clientName)
-            .toolbarBackground(
-                            Color.teal,
-                            for: .navigationBar)
-                        .toolbarBackground(.visible, for: .navigationBar)
-                        .background(Color.teal.ignoresSafeArea(edges: .bottom))
+            
         }
+        
+
         .onAppear(){
             clientClass.loadData()
             clientName = clientClass.besName
